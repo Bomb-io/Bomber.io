@@ -1,15 +1,18 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 
 const app = express();
 
 // import routers
+const playerRouter = require('./routers/player');
 
 // utility middleware
 app.use(express.json());
 app.use(express.static(path.resolve(__dirname, '../dist')));
 
 // use routers
+app.use('/api/player', playerRouter);
 
 // serve index
 app.get('/', (req, res) => {
