@@ -105,4 +105,19 @@ playerController.incrementWins = async (req, res, next) => {
   }
 };
 
+playerController.getLeaders = async (req, res, next) => {
+  const queryString = `SELECT * FROM players ORDER BY wins DESC LIMIT 10`;
+
+  try {
+    const response = await db.query(queryString);
+    res.locals.leaders = response.rows;
+    return next();
+  } catch (err) {
+    return next({
+      log: `ERROR in playerController.getPlayer: ${err}`,
+      message: { err: 'An error occurred' },
+    });
+  }
+};
+
 module.exports = playerController;
