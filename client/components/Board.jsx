@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Square from './Square.jsx';
 import Player from './Player.jsx';
+import socket from './useSocket';
 
 let boardStyle = {
   display: 'flex',
@@ -69,7 +70,6 @@ function trackAxis(targetAxis) {
   const [pressing, setPressing] = useState(0);
   // If pressed key is our target key then set to true
   function downHandler({ key }) {
-    socket.emit('keydown', key);
     if (!this[targetAxis]) {
       if (targetAxis == 'x') {
         if (key == 'a') {
@@ -96,12 +96,12 @@ function trackAxis(targetAxis) {
           }, 10);
         }
       }
+      socket('keydown', key);
     }
   }
   // If released key is our target key then set to false
   function upHandler({ key }) {
     if (this[targetAxis]) {
-      socket.emit('keyup', key);
       //changeInterval(false);
       if (targetAxis == 'x' && (key == 'a' || key == 'd')) {
         clearInterval(this[targetAxis]);
@@ -112,6 +112,7 @@ function trackAxis(targetAxis) {
         setPressing(false);
         this[targetAxis] = false;
       }
+      socket('keyup', key);
     }
   }
   // Add event listeners
