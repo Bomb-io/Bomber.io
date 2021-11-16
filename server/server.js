@@ -125,7 +125,7 @@ app.use((err, req, res, next) => {
     status: 500,
     message: { err: 'An error occurred' },
   };
-  const errorObj = { ...defaultErr, err };
+  const errorObj = { ...defaultErr, ...err };
   console.log(errorObj.log);
   return res.status(errorObj.status).json(errorObj.message);
 });
@@ -135,3 +135,5 @@ const PORT = process.env.PORT || 3000;
 httpServer.listen(3000, () => {
   console.log(`server listening on port ${PORT}`);
 });
+
+module.exports = httpServer;
