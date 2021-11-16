@@ -1,7 +1,8 @@
 import React, {useState, useEffect, useCallback} from 'react';
 import Square from './Square.jsx';
 import Player from './Player.jsx';
-
+import Bomb from './Bomb.jsx';
+//import BombManager from './Bomb.jsx';
 
 let boardStyle = {
     display: 'flex',
@@ -17,7 +18,9 @@ let boardStyle = {
 }
 
 function Board() {
-    let positions = {x: trackAxis("x"), y: trackAxis("y")}
+    //let positions = {x: trackAxis("x"), y: trackAxis("y")}
+    //keep track of positions of bombs
+
     let offsets = trackLocation();
     return <div style={boardStyle} className="board">
         {(() => {
@@ -27,7 +30,7 @@ function Board() {
             }
             return squares;
         })()}
-        <Player position={positions} boardPosition={offsets}/>
+        <Player /*position={positions}*/ boardPosition={offsets} /*placeBomb={placeBomb}*//>
     </div>
 }
 
@@ -59,72 +62,5 @@ function trackLocation() {
     }, [])
     return offsets  
 }
-
-function trackAxis(targetAxis) {
-    // State for keeping track of whether key is pressed
-    const [offset, setOffset] = useState(0);
-    const [pressing, setPressing] = useState(0);
-    // If pressed key is our target key then set to true
-    function downHandler({ key }) {
-      if(!this[targetAxis]){
-        if (targetAxis == "x"){
-          if (key == "a"){
-            this[targetAxis] = setInterval(() => {
-                setOffset(offset => offset - 5);
-                setPressing({right: false, left: true})
-            }, 10);
-          }else if (key == "d"){
-            this[targetAxis] = setInterval(() => {
-              setOffset(offset => offset + 5);
-              setPressing({right: true, left: false})
-          }, 10);
-          }
-        } else if (targetAxis == "y"){
-          if(key === "w") {
-              this[targetAxis] = setInterval(() => {
-                  setOffset(offset => offset - 5);
-                  setPressing({up: true, down: false})
-          }, 10);
-          }
-          else if (key === "s") {
-              this[targetAxis] = setInterval(() => {
-                  setOffset(offset => offset + 5);
-                  setPressing({up: false, down: true})
-            }, 10);
-          }
-        }
-      }
-    }
-    // If released key is our target key then set to false
-    function upHandler({ key }) {
-      if (this[targetAxis]) {
-        //changeInterval(false);
-        if(targetAxis == "x" && (key == "a" || key == "d")){
-          clearInterval(this[targetAxis]);
-          setPressing(false);
-          this[targetAxis] = false;
-        }else if (targetAxis == "y" && (key == "w" || key == "s")) {
-          clearInterval(this[targetAxis]);
-          setPressing(false);
-          this[targetAxis] = false;
-        }
-      }
-    };
-    // Add event listeners
-    useEffect(function() {
-      let keys = {
-          
-      }
-      window.addEventListener("keydown", downHandler.bind(keys));
-      window.addEventListener("keyup", upHandler.bind(keys));
-      
-      // Remove event listeners on cleanup
-      return () => {
-        window.removeEventListener("keydown", downHandler.bind(keys));
-        window.removeEventListener("keyup", upHandler.bind(keys));
-      };
-    }, []); // Empty array ensures that effect is only run on mount and unmount
-    return {offset: offset, pressing: pressing};
-  }
 
 export default Board;
