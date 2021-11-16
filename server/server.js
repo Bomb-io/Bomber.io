@@ -1,16 +1,10 @@
 require('dotenv').config();
-const path = require('path');
-const express = require('express');
 const { createServer } = require('http');
 const { Server } = require('socket.io');
 const uuid = require('uuid');
 const { initGame } = require('./game');
 
-const passport = require('passport');
-const cookieSession = require('cookie-session');
-require('./config/passport');
-
-const app = express();
+const app = require('./app');
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
@@ -20,36 +14,6 @@ const FramesPerGameStateTransmission = 3; // How game state is broadcasted to pl
 const MaxConnections = 10; // 10 players??
 const Connections = {}; // Contains player state  and websocket info like IP.
 
-// import routers
-const playerRouter = require('./routers/player');
-const authRouter = require('./routers/auth');
-
-// utility middleware
-app.use(express.json());
-app.use(express.static(path.resolve(__dirname, '../dist')));
-
-// enable sessions using passport.js middleware
-app.use(
-  cookieSession({
-    maxAge: 24 * 60 * 60 * 1000,
-    keys: [process.env.COOKIE_KEY],
-    httpOnly: true,
-  })
-);
-app.use(passport.initialize());
-app.use(passport.session());
-
-// use routers
-app.use('/api/player', playerRouter);
-app.use('/api/auth', authRouter);
-
-// serve index
-app.get('/', (req, res) => {
-  res.status(200).sendFile(path.join(__dirname, '../client/index.html'));
-});
-
-
-const state = {};  // global state to keep track of everything.
 const clientRooms = {}; //map client ids to rooms
 
 io.on('connection', (client) => {
@@ -63,7 +27,7 @@ io.on('connection', (client) => {
 
   // Player movement broadcast
   // client.on('playerMove', handlePlayerMove);
-  
+
   // Place bomb broadcast
   // client.on('placeBomb', handleBombPlace);
 
@@ -71,7 +35,7 @@ io.on('connection', (client) => {
   // client.on('playerDeath', handlePlayerDeath);
 
   function handleJoinGame(gameCode) {
-    const room = io.sockets.adapter.rooms[gameCode];  // create room
+    const room = io.sockets.adapter.rooms[gameCode]; // create room
 
     let allUser;
     if (room) {
@@ -116,9 +80,7 @@ io.on('connection', (client) => {
   }
 });
 
-function startGameInterval(roomName) {
-
-}
+function startGameInterval(roomName) {}
 
 function emitGameState(gameState) {
   // Send this event to everyone in the room.
@@ -129,25 +91,8 @@ function emitGameOver(room, winner) {
   io.sockets.in(room).emit('gameOver', JSON.stringify({ winner }));
 }
 
-// 404 handler
-app.use((req, res) => res.status(404).send('Page not found!'));
-
-// global error handler
-app.use((err, req, res, next) => {
-  const defaultErr = {
-    log: 'Express error handler caught unknown middleware error',
-    status: 500,
-    message: { err: 'An error occurred' },
-  };
-  const errorObj = { ...defaultErr, ...err };
-  console.log(errorObj.log);
-  return res.status(errorObj.status).json(errorObj.message);
-});
-
 const PORT = process.env.PORT || 3000;
 
 httpServer.listen(3000, () => {
   console.log(`server listening on port ${PORT}`);
 });
-
-module.exports = httpServer;

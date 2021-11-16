@@ -1,5 +1,5 @@
-const app = require('../server/server');
 const request = require('supertest');
+const app = require('../server/app');
 
 describe('GET /player', function () {
   it('responds with JSON containing player data.', function (done) {
@@ -15,9 +15,9 @@ describe('GET /player', function () {
 describe('GET /leaders', function () {
   it('responds with array containing top players.', function (done) {
     request(app)
-      .get('/api/leaders')
+      .get('/api/player/leaders')
       .set('Accept', 'application/json')
       .expect('Content-Type', /json/)
-      .expect(200);
+      .expect(200, done);
   });
 });
