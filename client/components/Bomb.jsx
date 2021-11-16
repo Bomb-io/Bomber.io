@@ -1,8 +1,19 @@
-import React from 'react';
+import React, {useState, useEffect,} from 'react';
 
 function Bomb() {
+  const [exploding, startExplosion] = useState(false);
 
-  return <Board/>;
+  useEffect(function(){
+    setTimeout(() => startExplosion(true), 2000)
+  })
+
+  return <span class="bomb">{(() => {
+    if(exploding == true){
+      return "------O------"
+    }else{
+      return "O"
+    }
+  })()}</span>;
 }
 
-export default App;
+export default Bomb;
