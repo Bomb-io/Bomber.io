@@ -48,25 +48,37 @@ app.get('/', (req, res) => {
   res.status(200).sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
+
+const state = {};  // global state to keep track of everything.
 const clientRooms = {}; //map client ids to rooms
 
 io.on('connection', (client) => {
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
 
-  // client.on('keydown', handleKeydown);
+  // client.on('keydown', handleKeydown); -- generic key down event
   // client.on('newGame', handleNewGame);
+
   // client.on('joinGame', handleJoinGame);
 
+  // Player movement broadcast
+  // client.on('playerMove', handlePlayerMove);
+  
+  // Place bomb broadcast
+  // client.on('placeBomb', handleBombPlace);
+
+  // Player death broadcast
+  // client.on('playerDeath', handlePlayerDeath);
+
   function handleJoinGame(gameCode) {
-    const room = io.sockets.adapter.rooms[gameCode];
+    const room = io.sockets.adapter.rooms[gameCode];  // create room
 
     let allUser;
     if (room) {
       allUsers = room.sockets; //object of all the current users in room.  key is client id, object is client itself.
     }
 
-    let numCliencts = 0;
+    let numClients = 0;
     if (allUsers) {
       numClients = Object.keys(allUsers).length; //Number of clients
     }
@@ -104,7 +116,9 @@ io.on('connection', (client) => {
   }
 });
 
-function startGameInterval(roomName) {}
+function startGameInterval(roomName) {
+
+}
 
 function emitGameState(gameState) {
   // Send this event to everyone in the room.
