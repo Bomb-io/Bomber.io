@@ -1,5 +1,5 @@
-const app = require('../server/server');
 const request = require('supertest');
+const app = require('../server/app');
 const db = require('../server/database/db');
 
 describe('POST /auth/signup', function () {
