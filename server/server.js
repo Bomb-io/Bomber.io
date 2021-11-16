@@ -17,10 +17,12 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 const clientRooms = {}; //map client ids to rooms
 
 io.on('connection', (client) => {
+  console.log('hello');
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
 
-  // client.on('keydown', handleKeydown); -- generic key down event
+  client.on('keydown', handleKeydown); //generic key down event
+  client.on('keyup', handleKeyup); //generic key down event
   // client.on('newGame', handleNewGame);
 
   // client.on('joinGame', handleJoinGame);
@@ -75,8 +77,14 @@ io.on('connection', (client) => {
     client.emit('init', 1); //send this back to frontend so its aware the number of the current player.
   }
 
-  function handleKeydown() {
+  function handleKeydown(data) {
     //handle user actions here...
+    console.log(data);
+  }
+
+  function handleKeyup(data) {
+    //handle user actions here...
+    console.log(data);
   }
 });
 
