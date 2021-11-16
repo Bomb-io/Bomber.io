@@ -49,7 +49,7 @@ playerController.incrementGames = async (req, res, next) => {
       games = $1
     WHERE
       players._id = $2;
-`;
+  `;
 
   try {
     await db.query(queryString, [+req.user.games + 1, req.user._id]);
@@ -71,7 +71,7 @@ playerController.incrementWins = async (req, res, next) => {
       wins = $1
     WHERE
       players._id = $2;
-`;
+  `;
 
   try {
     await db.query(queryString, [+req.user.wins + 1, req.user._id]);
