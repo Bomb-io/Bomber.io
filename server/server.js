@@ -1,16 +1,10 @@
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
-<<<<<<< HEAD
 const { createServer } = require('http');
 const { Server } = require("socket.io");
 const uuid = require('uuid');
 const { initGame } = require('./game');
-=======
-const passport = require('passport');
-const cookieSession = require('cookie-session');
-require('./config/passport');
->>>>>>> dev
 
 const app = express();
 const httpServer = createServer(app);
