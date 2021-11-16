@@ -1,7 +1,9 @@
 import React from 'react';
+import Board from './Board.jsx'
 
 function App() {
-  return <h1>HI WORLD</h1>;
+
+  return <Board/>;
 }
 
 export default App;
