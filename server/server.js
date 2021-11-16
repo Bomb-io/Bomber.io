@@ -132,11 +132,6 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 
-//app.listen will create a new http server, so we don't use that i guess.
-// app.listen(PORT, () => {
-//   console.log(`server listening on port ${PORT}`);
-// });
-
-server.listen(3000, () => {
-  console.log('listening on *:3000');
+httpServer.listen(3000, () => {
+  console.log(`server listening on port ${PORT}`);
 });
