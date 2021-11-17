@@ -19,16 +19,16 @@ const clientRooms = {}; //map client ids to rooms
 const ids = [];
 io.on('connection', (client) => {
   console.log('hello');
-  client.broadcast.emit('newPlayer', client.id);
-  if (ids.length) client.send.emit('newPlayer', ids[0]);
+  ids.forEach((id) => client.emit('newPlayer', id));
   ids.push(client.id);
+  client.broadcast.emit('newPlayer', client.id);
+
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
   client.on('keydown', handleKeydown); //generic key down event
   client.on('keyup', handleKeyup); //generic key down event
   client.on('position', (data) => {
     //console.log('emitting locations', "data")
-    console.log(client.id);
     client.broadcast.emit(`${client.id}`, { clientId: client.id, data: data });
   });
   // client.on('newGame', handleNewGame);
