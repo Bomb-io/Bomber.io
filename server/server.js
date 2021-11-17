@@ -17,7 +17,7 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 
 const state = {};
 const clientRooms = {}; //map client ids to rooms
-const ids = new Set();
+const ids = [];
 io.on('connection', (client) => {
   console.log('hello');
   ids.forEach((id) => client.emit('newPlayer', id));
