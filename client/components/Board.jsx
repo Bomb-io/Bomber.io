@@ -25,7 +25,8 @@ function Board() {
     //keep track of positions of bombs
     const [players, addPlayer] = useState({});
     socket.on('newPlayer', function(playerId){
-      addPlayer(Object.assign(players, {[playerId]: null}))
+      console.log('here')
+      addPlayer(Object.assign({[playerId]: null}, players))
     }); 
 
     let offsets = trackLocation();
@@ -38,12 +39,12 @@ function Board() {
             return squares;
         })()}
         {(() => {
+          console.log(players)
           let playersArr = [];
           for(const id in players){
             console.log(id)
             playersArr.push(<RemotePlayer id={id}/>)
           }
-          console.log(playersArr);
           return playersArr;
         })()}
         <Player /*position={positions}*/ boardPosition={offsets} /*placeBomb={placeBomb}*//>

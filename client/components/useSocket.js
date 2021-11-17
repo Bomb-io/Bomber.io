@@ -20,7 +20,7 @@ const socketThrottle = () => {
     if(canRun == true){
       socket.emit(event, data);
       canRun = false;
-      setTimeout(() => canRun = true, 100);
+      setTimeout(() => canRun = true, 500);
     }
   }
 };

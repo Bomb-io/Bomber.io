@@ -4,13 +4,15 @@ import {socket} from './useSocket.js'
 
 function RemotePlayer(props) {
   //Set coords here
-  let leftPosition;
-  let topPosition;
+  const [coords, setCoords] = useState({x: {offset: null}, y: {offset: null}});
+  let leftPosition = coords.x.offset;
+  let topPosition = coords.y.offset;
   let direction;
-  console.log(props.id)
-  console.log('HHHHH')
-    socket.on(`${props.id}`, function(data){
-        console.log(data);
+    socket.on(`${props.id}`, function({data}){
+        setCoords(data.coords)
+        console.log('here')
+        // leftPosition = data.coords.x.offset
+        // topPosition = data.coords.y.offset
     })
 
   let style = {
