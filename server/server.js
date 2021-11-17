@@ -18,16 +18,16 @@ const state = {};
 const clientRooms = {}; //map client ids to rooms
 io.on('connection', (client) => {
   console.log('hello');
-  client.broadcast.emit("newPlayer", client.id)
+  client.broadcast.emit('newPlayer', client.id);
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
   client.on('keydown', handleKeydown); //generic key down event
   client.on('keyup', handleKeyup); //generic key down event
-  client.on('position',(data)=>{
+  client.on('position', (data) => {
     //console.log('emitting locations', "data")
-    console.log(client.id)
-    client.broadcast.emit(`${client.id}`,{clientId: client.id, data: data})
-  })
+    console.log(client.id);
+    client.broadcast.emit(`${client.id}`, { clientId: client.id, data: data });
+  });
   // client.on('newGame', handleNewGame);
 
   // client.on('joinGame', handleJoinGame);
@@ -91,7 +91,6 @@ io.on('connection', (client) => {
     //handle user actions here...
     console.log(data);
   }
-
 });
 
 function startGameInterval(roomName) {}
@@ -107,6 +106,6 @@ function emitGameOver(room, winner) {
 
 const PORT = process.env.PORT || 3000;
 
-httpServer.listen(3000, () => {
+httpServer.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
