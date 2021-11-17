@@ -16,13 +16,13 @@ const socketDebounce = () => {
 
 const socketThrottle = () => {
   let canRun = true;
-  return function(event, data){
-    if(canRun == true){
+  return function (event, data) {
+    if (canRun == true) {
       socket.emit(event, data);
       canRun = false;
-      setTimeout(() => canRun = true, 500);
+      setTimeout(() => (canRun = true), 50);
     }
-  }
+  };
 };
 
 export default socketThrottle();
