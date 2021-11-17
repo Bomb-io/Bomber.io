@@ -19,9 +19,10 @@ const state = {};
 const clientRooms = {}; //map client ids to rooms
 const ids = [];
 io.on('connection', (client) => {
-  console.log('hello');
   ids.forEach((id) => client.emit('newPlayer', id));
+  client.emit('newPlayer', ids);
   ids.push(client.id);
+  console.log(ids);
   client.broadcast.emit('newPlayer', client.id);
 
   // const state = createGameState(); //Create Gamestate as soon as player connects.
@@ -32,13 +33,19 @@ io.on('connection', (client) => {
     //console.log('emitting locations', "data")
     client.broadcast.emit(`${client.id}`, { clientId: client.id, data: data });
   });
-  client.on('end', (data) => {
+  // client.on('end', (data) => {
+  //   ids.forEach((id, i) => {
+  //     if (id === client.id) ids.splice(i, 1);
+  //   });
+  //   client.broadcast.emit('killPlayer', client.id);
+  //   client.disconnect();
+  // });
+  client.on('disconnect', (data)=>{
     ids.forEach((id, i) => {
       if (id === client.id) ids.splice(i, 1);
     });
     client.broadcast.emit('killPlayer', client.id);
-    client.disconnect();
-  });
+  })
   // client.on('newGame', handleNewGame);
 
   // client.on('joinGame', handleJoinGame);

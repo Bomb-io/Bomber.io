@@ -10,9 +10,6 @@ function RemotePlayer(props) {
   let direction;
     socket.on(`${props.id}`, function({data}){
         setCoords(data.coords)
-        console.log('here')
-        // leftPosition = data.coords.x.offset
-        // topPosition = data.coords.y.offset
     })
 
   let style = {
