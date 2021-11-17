@@ -18,6 +18,7 @@ function Player(props) {
   useEffect(function () {
     function handleBomb({ key }) {
       if (key == ' ') {
+        console.log('test',leftPosition, topPosition);
         console.log('spacebar clicked')
         socket('bomb', {x: leftPosition, y: topPosition})
       }
@@ -26,7 +27,7 @@ function Player(props) {
     return () => {
       window.removeEventListener('keydown', handleBomb);
     };
-  }, []);
+  }, []); 
 
   let direction = broadcastPos(coords);
   // console.log('x offset: ' + (props.boardPosition.left + leftPosition))

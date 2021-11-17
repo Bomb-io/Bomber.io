@@ -18,10 +18,9 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 const state = {};
 const clientRooms = {}; //map client ids to rooms
 const ids = [];
-const bombs = [];
+let bombs = [];
 io.on('connection', (client) => {
   ids.forEach((id) => client.emit('newPlayer', id));
-  client.emit('newPlayer', ids);
   ids.push(client.id);
   console.log(ids);
   client.broadcast.emit('newPlayer', client.id);
@@ -121,20 +120,21 @@ io.on('connection', (client) => {
     //handle user actions here...
     console.log(data);
   }
-  function startGameInterval() {
-    const interval = setInterval(()=>{
-      bombs.forEach(bomb => {
-        bomb.time--;
-        if (bomb.time === 0) bomb.exploding = true;
-      })
-      client.emit('bombs', bombs);
-      bombs = bombs.filter(bomb => bomb.time > -5)
-      //broadcast this to client/
-      //client explodes and sends request
-      //then we send bomb array again
-    }, 50);
-  }
-  startInterval();
+
+  // function startGameInterval() {
+  //   const interval = setInterval(()=>{
+  //     bombs.forEach(bomb => {
+  //       bomb.time--;
+  //       if (bomb.time === 0) bomb.exploding = true;
+  //     })
+  //     client.emit('bombs', bombs);
+  //     bombs = bombs.filter(bomb => bomb.time > -5)
+  //     //broadcast this to client/
+  //     //client explodes and sends request
+  //     //then we send bomb array again
+  //   }, 50);
+  // }
+  // startGameInterval();
 });
 
 function startGameInterval() {
@@ -143,7 +143,7 @@ function startGameInterval() {
       bomb.time--;
       if (bomb.time === 0) bomb.exploding = true;
     })
-    client.emit('bombs', bombs);
+    io.emit('bombs', bombs);
     bombs = bombs.filter(bomb => bomb.time > -5)
     //broadcast this to client/
     //client explodes and sends request
@@ -152,7 +152,7 @@ function startGameInterval() {
 
 }
 
-// startGameInterval()
+
 
 function emitGameState(gameState) {
   // Send this event to everyone in the room.
@@ -168,3 +168,7 @@ const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
   console.log(`server listening on port ${PORT}`);
 });
+ //io.emit('bombs', ()=>{
+//   startGameInterval();
+// });
+// startGameInterval()
