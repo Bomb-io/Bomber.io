@@ -32,6 +32,13 @@ io.on('connection', (client) => {
     //console.log('emitting locations', "data")
     client.broadcast.emit(`${client.id}`, { clientId: client.id, data: data });
   });
+  client.on('end', (data) => {
+    ids.forEach((id, i) => {
+      if (id === client.id) ids.splice(i, 1);
+    });
+    client.broadcast.emit('killPlayer', client.id);
+    client.disconnect();
+  });
   // client.on('newGame', handleNewGame);
 
   // client.on('joinGame', handleJoinGame);

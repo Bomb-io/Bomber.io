@@ -4,6 +4,9 @@ import socket from './useSocket';
 function Player(props) {
   const [bombPlaced, placeBomb] = useState(false);
   useEffect(function () {
+    window.onbeforeunload = function (e) {
+      socket('end');
+    };
     function handleBomb({ key }) {
       if (key == ' ') {
         props.placeBomb();
