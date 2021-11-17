@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import Square from './Square.jsx';
 import Player from './Player.jsx';
-import socket from './useSocket';
+//import  from './useSocket';
+import { socket } from './useSocket'; 
 import Bomb from './Bomb.jsx';
+import RemotePlayer from './RemotePlayer.jsx';
 //import BombManager from './Bomb.jsx';
 
 let boardStyle = {
@@ -21,6 +23,10 @@ let boardStyle = {
 function Board() {
     //let positions = {x: trackAxis("x"), y: trackAxis("y")}
     //keep track of positions of bombs
+    const [players, addPlayer] = useState({});
+    socket.on('newPlayer', function(playerId){
+      addPlayer(Object.assign(players, {[playerId]: null}))
+    }); 
 
     let offsets = trackLocation();
     return <div style={boardStyle} className="board">
@@ -31,9 +37,17 @@ function Board() {
             }
             return squares;
         })()}
+        {(() => {
+          let playersArr = [];
+          for(const id in players){
+            console.log(id)
+            playersArr.push(<RemotePlayer id={id}/>)
+          }
+          console.log(playersArr);
+          return playersArr;
+        })()}
         <Player /*position={positions}*/ boardPosition={offsets} /*placeBomb={placeBomb}*//>
     </div>
-  );
 }
 
 function trackLocation() {

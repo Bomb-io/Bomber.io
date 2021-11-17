@@ -14,15 +14,20 @@ const FramesPerGameStateTransmission = 3; // How game state is broadcasted to pl
 const MaxConnections = 10; // 10 players??
 const Connections = {}; // Contains player state  and websocket info like IP.
 
+const state = {};
 const clientRooms = {}; //map client ids to rooms
-
 io.on('connection', (client) => {
   console.log('hello');
+  client.broadcast.emit("newPlayer", client.id)
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
-
   client.on('keydown', handleKeydown); //generic key down event
   client.on('keyup', handleKeyup); //generic key down event
+  client.on('position',(data)=>{
+    //console.log('emitting locations', "data")
+    console.log(client.id)
+    client.broadcast.emit(`${client.id}`,{clientId: client.id, data: data})
+  })
   // client.on('newGame', handleNewGame);
 
   // client.on('joinGame', handleJoinGame);
@@ -36,8 +41,8 @@ io.on('connection', (client) => {
   // Player death broadcast
   // client.on('playerDeath', handlePlayerDeath);
 
-  function handleJoinGame(gameCode) {
-    const room = io.sockets.adapter.rooms[gameCode]; // create room
+  function handleJoinGame() {
+    const room = io.sockets.adapter.rooms['room1']; // create room
 
     let allUser;
     if (room) {
@@ -59,15 +64,15 @@ io.on('connection', (client) => {
       return;
     }
 
-    clientRooms[client.id] = gameCode;
-    client.join(gameCode);
+    clientRooms[client.id] = 'room1';
+    client.join('room1');
     client.number = 2; //Second player to join a game;
     client.emit('init', 2); //Two player game
   }
 
   function handleNewGame() {
     //Create a new room.
-    let roomName = makeId(5); //generate 5 character id
+    let roomName = 'room1'; //generate 5 character id
     clientRooms[client.id] = roomName;
     client.emit('gameCode', roomName);
 
@@ -86,6 +91,7 @@ io.on('connection', (client) => {
     //handle user actions here...
     console.log(data);
   }
+
 });
 
 function startGameInterval(roomName) {}
