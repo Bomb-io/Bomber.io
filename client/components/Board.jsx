@@ -24,6 +24,8 @@ function Board() {
   //let positions = {x: trackAxis("x"), y: trackAxis("y")}
   //keep track of positions of bombs
   const [players, addPlayer] = useState({});
+  const [bombs, setBombs] = useState([]);
+  
   socket.on('newPlayer', function (playerId) {
     console.log('here');
     addPlayer(Object.assign({ [playerId]: null }, players));
@@ -32,6 +34,12 @@ function Board() {
     console.log('ded');
     const { [playerId]: deadPlayer, ...remainingPlayers } = players;
     addPlayer(remainingPlayers);
+  });
+  socket.on('bombs', function(bombsArr){
+    setBombs(bombsArr.map(function(elem) {
+        //Return a <Bomb/> component with the props taken from elem
+        return <Bomb leftPosition={bomb.x} topPosition={bomb.y} exploding={bomb.exploding}/>
+    }));
   });
 
   let offsets = trackLocation();
@@ -58,6 +66,7 @@ function Board() {
           offsets
         } /*placeBomb={placeBomb}*/
       />
+      {bombs}
     </div>
   );
 }

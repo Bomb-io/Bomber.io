@@ -18,6 +18,7 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 const state = {};
 const clientRooms = {}; //map client ids to rooms
 const ids = [];
+const bombs = [];
 io.on('connection', (client) => {
   ids.forEach((id) => client.emit('newPlayer', id));
   client.emit('newPlayer', ids);
@@ -28,6 +29,17 @@ io.on('connection', (client) => {
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
   client.on('keydown', handleKeydown); //generic key down event
+  
+  client.on('bomb', (data)=>{
+    console.log('bombs', bombs);
+    bombs.push({
+      x: data.x,
+      y: data.y,
+      exploding: false,
+      time: 40
+    });
+    
+  })
   client.on('keyup', handleKeyup); //generic key down event
   client.on('position', (data) => {
     //console.log('emitting locations', "data")
@@ -109,9 +121,38 @@ io.on('connection', (client) => {
     //handle user actions here...
     console.log(data);
   }
+  function startGameInterval() {
+    const interval = setInterval(()=>{
+      bombs.forEach(bomb => {
+        bomb.time--;
+        if (bomb.time === 0) bomb.exploding = true;
+      })
+      client.emit('bombs', bombs);
+      bombs = bombs.filter(bomb => bomb.time > -5)
+      //broadcast this to client/
+      //client explodes and sends request
+      //then we send bomb array again
+    }, 50);
+  }
+  startInterval();
 });
 
-function startGameInterval(roomName) {}
+function startGameInterval() {
+  const interval = setInterval(()=>{
+    bombs.forEach(bomb => {
+      bomb.time--;
+      if (bomb.time === 0) bomb.exploding = true;
+    })
+    client.emit('bombs', bombs);
+    bombs = bombs.filter(bomb => bomb.time > -5)
+    //broadcast this to client/
+    //client explodes and sends request
+    //then we send bomb array again
+  }, 50);
+
+}
+
+// startGameInterval()
 
 function emitGameState(gameState) {
   // Send this event to everyone in the room.

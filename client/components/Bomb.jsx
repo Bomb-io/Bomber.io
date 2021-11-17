@@ -1,14 +1,17 @@
 import React, {useState, useEffect,} from 'react';
 
 function Bomb() {
-  const [exploding, startExplosion] = useState(false);
-
-  useEffect(function(){
-    setTimeout(() => startExplosion(true), 2000)
-  })
+  let style = {
+    position: 'absolute',
+    display: 'inline-block',
+    left: props.leftPosition,
+    top: props.topPosition,
+    fontSize: '100px',
+    zIndex: '1',
+  };
 
   return <span class="bomb">{(() => {
-    if(exploding == true){
+    if(props.exploding == true){
       return "------O------"
     }else{
       return "O"

@@ -2,21 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 
 import socket from './useSocket';
 function Player(props) {
-  const [bombPlaced, placeBomb] = useState(false);
-  useEffect(function () {
-    // window.addEventListener('beforeunload', function (e) {
-    //   socket('end');
-    // });
-    function handleBomb({ key }) {
-      if (key == ' ') {
-        props.placeBomb();
-      }
-    }
-    window.addEventListener('keydown', handleBomb);
-    return () => {
-      window.removeEventListener('keydown', handleBomb);
-    };
-  }, []);
   //Get coordinates
   let coords = { x: trackAxis('x'), y: trackAxis('y') };
   let leftPosition = coords.x.offset;
@@ -29,6 +14,19 @@ function Player(props) {
     fontSize: '100px',
     zIndex: '1',
   };
+  
+  useEffect(function () {
+    function handleBomb({ key }) {
+      if (key == ' ') {
+        console.log('spacebar clicked')
+        socket('bomb', {x: leftPosition, y: topPosition})
+      }
+    }
+    window.addEventListener('keydown', handleBomb);
+    return () => {
+      window.removeEventListener('keydown', handleBomb);
+    };
+  }, []);
 
   let direction = broadcastPos(coords);
   // console.log('x offset: ' + (props.boardPosition.left + leftPosition))
