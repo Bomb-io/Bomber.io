@@ -1,30 +1,30 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from 'react';
 
-import socket from "./useSocket";
+import socket from './useSocket';
 function Player(props) {
   const [bombPlaced, placeBomb] = useState(false);
   useEffect(function () {
     function handleBomb({ key }) {
-      if (key == " ") {
+      if (key == ' ') {
         props.placeBomb();
       }
     }
-    window.addEventListener("keydown", handleBomb);
+    window.addEventListener('keydown', handleBomb);
     return () => {
-      window.removeEventListener("keydown", handleBomb);
+      window.removeEventListener('keydown', handleBomb);
     };
   }, []);
   //Get coordinates
-  let coords = { x: trackAxis("x"), y: trackAxis("y") };
+  let coords = { x: trackAxis('x'), y: trackAxis('y') };
   let leftPosition = coords.x.offset;
   let topPosition = coords.y.offset;
   let style = {
-    position: "absolute",
-    display: "inline-block",
+    position: 'absolute',
+    display: 'inline-block',
     left: leftPosition,
     top: topPosition,
-    fontSize: "100px",
-    zIndex: "1",
+    fontSize: '100px',
+    zIndex: '1',
   };
 
   let direction = broadcastPos(coords);
@@ -43,7 +43,7 @@ function Player(props) {
 
   return (
     <span className="player" style={style}>
-      {"X"}
+      {'X'}
     </span>
   );
 }
@@ -56,27 +56,27 @@ function trackAxis(targetAxis) {
   function downHandler({ key }) {
     //if (['w', 'a', 's', 'd', ' '].includes(key)) socket('keydown', key);
     if (!this[targetAxis]) {
-      if (targetAxis == "x") {
-        if (key == "a") {
+      if (targetAxis == 'x') {
+        if (key == 'a') {
           this[targetAxis] = setInterval(() => {
-            setOffset((offset) => offset - 5);
+            setOffset((offset) => offset - 3);
             setPressing({ right: false, left: true });
           }, 10);
-        } else if (key == "d") {
+        } else if (key == 'd') {
           this[targetAxis] = setInterval(() => {
-            setOffset((offset) => offset + 5);
+            setOffset((offset) => offset + 3);
             setPressing({ right: true, left: false });
           }, 10);
         }
-      } else if (targetAxis == "y") {
-        if (key === "w") {
+      } else if (targetAxis == 'y') {
+        if (key === 'w') {
           this[targetAxis] = setInterval(() => {
-            setOffset((offset) => offset - 5);
+            setOffset((offset) => offset - 3);
             setPressing({ up: true, down: false });
           }, 10);
-        } else if (key === "s") {
+        } else if (key === 's') {
           this[targetAxis] = setInterval(() => {
-            setOffset((offset) => offset + 5);
+            setOffset((offset) => offset + 3);
             setPressing({ up: false, down: true });
           }, 10);
         }
@@ -88,11 +88,11 @@ function trackAxis(targetAxis) {
     if (this[targetAxis]) {
       //changeInterval(false);
       //if (['w', 'a', 's', 'd', ' '].includes(key)) socket('keyup', key);
-      if (targetAxis == "x" && (key == "a" || key == "d")) {
+      if (targetAxis == 'x' && (key == 'a' || key == 'd')) {
         clearInterval(this[targetAxis]);
         setPressing(false);
         this[targetAxis] = false;
-      } else if (targetAxis == "y" && (key == "w" || key == "s")) {
+      } else if (targetAxis == 'y' && (key == 'w' || key == 's')) {
         clearInterval(this[targetAxis]);
         setPressing(false);
         this[targetAxis] = false;
@@ -102,19 +102,19 @@ function trackAxis(targetAxis) {
   // Add event listeners
   useEffect(function () {
     let keys = {};
-    window.addEventListener("keydown", downHandler.bind(keys));
-    window.addEventListener("keyup", upHandler.bind(keys));
+    window.addEventListener('keydown', downHandler.bind(keys));
+    window.addEventListener('keyup', upHandler.bind(keys));
 
     // Remove event listeners on cleanup
     return () => {
-      window.removeEventListener("keydown", downHandler.bind(keys));
-      window.removeEventListener("keyup", upHandler.bind(keys));
+      window.removeEventListener('keydown', downHandler.bind(keys));
+      window.removeEventListener('keyup', upHandler.bind(keys));
     };
   }, []); // Empty array ensures that effect is only run on mount and unmount
   return { offset: offset, pressing: pressing };
 }
 
-function broadcastPos(coords){
+function broadcastPos(coords) {
   let direction;
   if (
     coords.x.pressing.right &&
@@ -122,7 +122,7 @@ function broadcastPos(coords){
     !coords.x.pressing.left &&
     !coords.y.pressing.down
   ) {
-    direction ="upright"
+    direction = 'upright';
     //Going diagonally up right
   } else if (
     coords.x.pressing.left &&
@@ -130,7 +130,7 @@ function broadcastPos(coords){
     !coords.x.pressing.right &&
     !coords.y.pressing.down
   ) {
-    direction ="upleft"
+    direction = 'upleft';
     //Going diagonally up left
   } else if (
     coords.x.pressing.right &&
@@ -138,7 +138,7 @@ function broadcastPos(coords){
     !coords.x.pressing.left &&
     !coords.y.pressing.up
   ) {
-    direction = "downright"
+    direction = 'downright';
     //Going diagonally down right
   } else if (
     coords.x.pressing.left &&
@@ -146,7 +146,7 @@ function broadcastPos(coords){
     !coords.x.pressing.right &&
     !coords.y.pressing.up
   ) {
-    direction = "downleft"
+    direction = 'downleft';
     //Going diagonally down left
   } else if (
     coords.y.pressing.up &&
@@ -154,7 +154,7 @@ function broadcastPos(coords){
     !coords.x.pressing.left &&
     !coords.x.pressing.right
   ) {
-    direction = "up"
+    direction = 'up';
     //Going up
   } else if (
     coords.y.pressing.down &&
@@ -162,7 +162,7 @@ function broadcastPos(coords){
     !coords.x.pressing.left &&
     !coords.x.pressing.right
   ) {
-    direction = "down"
+    direction = 'down';
     //Going down
   } else if (
     coords.x.pressing.left &&
@@ -170,7 +170,7 @@ function broadcastPos(coords){
     !coords.y.pressing.up &&
     !coords.x.pressing.right
   ) {
-    direction = "left"
+    direction = 'left';
     //Going left
   } else if (
     coords.x.pressing.right &&
@@ -178,14 +178,14 @@ function broadcastPos(coords){
     !coords.x.pressing.left &&
     !coords.y.pressing.up
   ) {
-    direction = "right"
+    direction = 'right';
     //Goign right
   } else {
-    direction = "crazy"
+    direction = 'crazy';
     //Going crazzzzzyyyyy
   }
-  socket("position", {coords: coords, direction: direction})
-  return direction
+  socket('position', { coords: coords, direction: direction });
+  return direction;
 }
 
 export default Player;

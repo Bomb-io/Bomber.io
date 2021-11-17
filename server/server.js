@@ -5,6 +5,7 @@ const uuid = require('uuid');
 const { initGame } = require('./game');
 
 const app = require('./app');
+const { S } = require('xmlchars/xml/1.0/ed5');
 const httpServer = createServer(app);
 const io = new Server(httpServer);
 
@@ -16,7 +17,7 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 
 const state = {};
 const clientRooms = {}; //map client ids to rooms
-const ids = [];
+const ids = new Set();
 io.on('connection', (client) => {
   console.log('hello');
   ids.forEach((id) => client.emit('newPlayer', id));
