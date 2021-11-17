@@ -1,17 +1,28 @@
 import socketIOClient from 'socket.io-client';
+export const socket = socketIOClient.connect('/');
 
 const socketDebounce = () => {
-  const socket = socketIOClient.connect('/');
-  let downkeys = [];
+  let lastkey = null;
   return function (event, key) {
+    console.log('test');
     if (event === 'keydown' && key !== lastkey) {
       lastkey = key;
       socket.emit(event, key);
     } else if (event === 'keyup') {
       socket.emit(event, key);
-      if ()
     }
   };
 };
 
-export default socketDebounce();
+const socketThrottle = () => {
+  let canRun = true;
+  return function(event, data){
+    if(canRun == true){
+      socket.emit(event, data);
+      canRun = false;
+      setTimeout(() => canRun = true, 500);
+    }
+  }
+};
+
+export default socketThrottle();
