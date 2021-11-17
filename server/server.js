@@ -16,9 +16,12 @@ const Connections = {}; // Contains player state  and websocket info like IP.
 
 const state = {};
 const clientRooms = {}; //map client ids to rooms
+const ids = [];
 io.on('connection', (client) => {
   console.log('hello');
   client.broadcast.emit('newPlayer', client.id);
+  if (ids.length) client.send.emit('newPlayer', ids[0]);
+  ids.push(client.id);
   // const state = createGameState(); //Create Gamestate as soon as player connects.
   //figure out key actions here
   client.on('keydown', handleKeydown); //generic key down event
